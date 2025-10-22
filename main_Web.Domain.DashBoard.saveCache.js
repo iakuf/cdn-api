@@ -9,6 +9,7 @@ const sdkObj = new sdk(
     { debug: true }
 );
 
+// 提交刷新接口
 const api = 'Web.Domain.DashBoard.saveCache'; // 接口地址
 try {
 
@@ -16,8 +17,7 @@ try {
         data: {
             // 根据 API 文档，请求 body 需要一个 domain 数组
             "specialurl": [
-                "http://test20170205.com/path/to/file.html",
-                "http://test20170204.com/assets/main.js"
+                "https://cdn.listlive.cn/assets/img/hero-icon.png"
             ]
         }
     };

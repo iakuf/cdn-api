@@ -8,7 +8,7 @@ const sdkObj = new sdk(
     'http://apiv4.diansuyun.com/V4/',
     { debug: true }
 );
-## 域名刷新
+
 const api = 'Web.Domain.add.batch'; // 接口地址
 try {
 
@@ -16,8 +16,7 @@ try {
         data: {
             // 根据 API 文档，请求 body 需要一个 domain 数组
             domain: [
-                "test20170204.com",
-                "test20170205.com"
+                "cdn.listlive.cn"
             ]
         }
     };

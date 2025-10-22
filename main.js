@@ -1,5 +1,6 @@
 import sdk from './src/sdk.js';
-
+import fs from 'fs';
+import path from 'path';
 
 
 const sdkObj = new sdk(
@@ -9,27 +10,47 @@ const sdkObj = new sdk(
     { debug: true }
 );
 
-const api = 'Web.Domain.DashBoard.cache.clean.list'; // 接口地址
+/**
+ * 读取证书文件内容
+ * @param {string} filePath - 文件路径
+ * @returns {string} 文件内容
+ */
+const readCertFile = (filePath) => {
+    try {
+        return fs.readFileSync(filePath, 'utf8');
+    } catch (err) {
+        throw new Error(`读取文件失败 ${filePath}: ${err.message}`);
+    }
+};
+
+// 批量将证书绑定到域名
+const api = 'Web.ca.batch.operat'; // 接口地址
 try {
-
     const reqParams = {
-        data: {
-            // 根据 API 文档，请求 body 需要一个 domain 数组
-            "specialurl": [
-                "http://test20170205.com/path/to/file.html",
-                "http://test20170204.com/assets/main.js"
-            ]
-        }
-    };
-
+        "id": [29],  // 证书ID
+        "type": "relation"  // 操作类型：关联证书到域名
+    }
+    
     console.log(`\n调用 API: ${api}...`);
-    const resp = await sdkObj.get(api, reqParams);
+    console.log(`证书ID: ${reqParams.id.join(', ')}`);
+    console.log(`操作类型: ${reqParams.type}`);
+    
+    const resp = await sdkObj.post(api, { data: reqParams });
 
     if (resp.bizCode === 1) {
         console.log(`${api} - 业务处理成功`);
         console.log(`  http_code: ${resp.httpCode}`);
-        // 成功后，从 resp.bizData.list 中获取数据
-        console.log('  成功添加的域名列表:', resp.bizData.list);
+        console.log(`  操作结果:`);
+        if (resp.bizData) {
+            console.log(`    总数: ${resp.bizData.total}`);
+            console.log(`    失败数: ${resp.bizData.fail_total}`);
+            if (resp.bizData.fail_list && resp.bizData.fail_list.length > 0) {
+                console.log(`    失败列表:`, resp.bizData.fail_list);
+            }
+            if (resp.bizData.remark) {
+                console.log(`    备注: ${resp.bizData.remark}`);
+            }
+        }
     } else {
         // 业务失败，打印失败信息
         console.log(`${api} - 业务处理失败: ${resp.bizMsg}`);

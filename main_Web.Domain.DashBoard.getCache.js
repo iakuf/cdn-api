@@ -9,21 +9,12 @@ const sdkObj = new sdk(
     { debug: true }
 );
 
+// 取得刷新的记录
 const api = 'Web.Domain.DashBoard.getCache'; // 接口地址
 try {
 
-    const reqParams = {
-        data: {
-            // 根据 API 文档，请求 body 需要一个 domain 数组
-            "specialurl": [
-                "http://test20170205.com/path/to/file.html",
-                "http://test20170204.com/assets/main.js"
-            ]
-        }
-    };
-
     console.log(`\n调用 API: ${api}...`);
-    // const resp = await sdkObj.get(api, reqParams);
+
     const resp = await sdkObj.get(api)
 
     if (resp.bizCode === 1) {
