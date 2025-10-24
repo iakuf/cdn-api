@@ -1,15 +1,32 @@
 {
   "name": "diansuyun-api-adapter",
   "version": "1.0.0",
-  "description": "API adapter for diansuyun CDN service.",
-  "main": "server.js",
+  "description": "API adapter for diansuyun CDN service - 将第三方标准API转换为Diansuyun内部API",
+  "main": "src/server.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/server.js",
+    "test": "node test_api_adapter.js",
+    "test:single": "node test_api_adapter.js",
+    "dev": "DEBUG=true node src/server.js"
   },
+  "keywords": [
+    "cdn",
+    "api",
+    "adapter",
+    "diansuyun",
+    "cache",
+    "certificate"
+  ],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "koa": "^2.13.4",
     "@koa/router": "^12.0.0",
     "koa-bodyparser": "^4.3.0",
     "dayjs": "^1.11.7"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

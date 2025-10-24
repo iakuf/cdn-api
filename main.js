@@ -1,7 +1,4 @@
 import sdk from './src/sdk.js';
-import fs from 'fs';
-import path from 'path';
-
 
 const sdkObj = new sdk(
     '9JLZCITlaE61511PGx7r',
@@ -10,54 +7,56 @@ const sdkObj = new sdk(
     { debug: true }
 );
 
-/**
- * 读取证书文件内容
- * @param {string} filePath - 文件路径
- * @returns {string} 文件内容
- */
-const readCertFile = (filePath) => {
-    try {
-        return fs.readFileSync(filePath, 'utf8');
-    } catch (err) {
-        throw new Error(`读取文件失败 ${filePath}: ${err.message}`);
-    }
-};
-
-// 批量将证书绑定到域名
-const api = 'Web.ca.batch.operat'; // 接口地址
+// 封禁指定URL
+const api = 'firewall.policy.save'; // 接口地址
 try {
     const reqParams = {
-        "id": [29],  // 证书ID
-        "type": "relation"  // 操作类型：关联证书到域名
-    }
+        data: {
+            domain_id: 89,
+            from: "diy",
+            type: "cdn",  // 策略类型：必需参数
+            remark: "封禁 /index.html",
+            action: "verification",
+            action_data:{
+                "next_rules":1,
+                "cc":1,
+                "waf":1,
+                "type":"cookie"
+              },
+            rules: [
+                {
+                    rule_type: "url",
+                    logic: "equals",
+                    data: ["/index.html"]
+                }
+            ]
+        }
+    };
     
     console.log(`\n调用 API: ${api}...`);
-    console.log(`证书ID: ${reqParams.id.join(', ')}`);
-    console.log(`操作类型: ${reqParams.type}`);
+    console.log(`域名ID: ${reqParams.data.domain_id}`);
+    console.log(`封禁URL: http://cdn.listlive.cn${reqParams.data.rules[0].data[0]}`);
+    console.log(`封禁时长: ${reqParams.data.action_data.interval}${reqParams.data.action_data.time_unit}`);
     
-    const resp = await sdkObj.post(api, { data: reqParams });
+    const resp = await sdkObj.post(api, reqParams);
 
     if (resp.bizCode === 1) {
-        console.log(`${api} - 业务处理成功`);
+        console.log(`\n${api} - 业务处理成功`);
         console.log(`  http_code: ${resp.httpCode}`);
-        console.log(`  操作结果:`);
-        if (resp.bizData) {
-            console.log(`    总数: ${resp.bizData.total}`);
-            console.log(`    失败数: ${resp.bizData.fail_total}`);
-            if (resp.bizData.fail_list && resp.bizData.fail_list.length > 0) {
-                console.log(`    失败列表:`, resp.bizData.fail_list);
-            }
-            if (resp.bizData.remark) {
-                console.log(`    备注: ${resp.bizData.remark}`);
-            }
-        }
+        console.log(`  策略ID: ${resp.bizData?.id}`);
+        console.log(`  消息: ${resp.bizMsg}`);
+        console.log(`\n封禁策略已成功创建！`);
     } else {
         // 业务失败，打印失败信息
-        console.log(`${api} - 业务处理失败: ${resp.bizMsg}`);
+        console.log(`\n${api} - 业务处理失败: ${resp.bizMsg}`);
         console.log(`  http_code: ${resp.httpCode}`);
+        if (resp.bizData) {
+            console.log(`  详细信息:`, resp.bizData);
+        }
     }
 
 } catch (err) {
     // 网络请求或SDK内部错误
-    console.error(`API '${api}' 调用失败:`, err.message);
+    console.error(`\nAPI '${api}' 调用失败:`, err.message);
+    console.error(`错误详情:`, err);
 }

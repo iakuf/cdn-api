@@ -218,7 +218,7 @@ class Sdk {
         };
 
         if (upperMethod !== 'GET' && upperMethod !== 'HEAD') {
-            requestOptions.body = JSON.stringify(data);
+            requestOptions.body = this._getSortedJsonString(data);
         }
         
         if (this.debug) {
