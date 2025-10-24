@@ -32,3 +32,18 @@ try {
     // 网络请求或SDK内部错误
     console.error(`API '${api}' 调用失败:`, err.message);
 }
+
+/* 响应示例
+Response: {
+  httpCode: 200,
+  respBody: '{"status":{"code":1,"message":"操作成功"},"data":{"wholesite":[],"specialurl":["http://cdn.listlive.cn/index.html"],"specialdir":[],"id":"7"}}',
+  bizCode: 1,
+  bizMsg: '操作成功',
+  bizData: {
+    wholesite: [],
+    specialurl: [ 'http://cdn.listlive.cn/index.html' ],
+    specialdir: [],
+    id: '7'
+  }
+}
+*/

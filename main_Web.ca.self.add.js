@@ -24,7 +24,7 @@ const readCertFile = (filePath) => {
 };
 
 // 上传自有证书
-const api = 'Web.ca.self.add'; // 接口地址
+const api = 'Web.ca.text.save'; // 接口地址
 try {
     // 证书文件路径
     const certDir = path.join(process.cwd(), 'Nginx_PEM', 'PEM');

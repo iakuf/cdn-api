@@ -61,3 +61,14 @@ try {
     // 网络请求或SDK内部错误
     console.error(`API '${api}' 调用失败:`, err.message);
 }
+
+
+/* 响应示例
+] Response: {
+  httpCode: 200,
+  respBody: '{"status":{"code":1,"message":"操作成功"},"data":{"total":1,"fail_list":[],"remark":"证书到期或证书未绑定域名！","fail_total":0}}',
+  bizCode: 1,
+  bizMsg: '操作成功',
+  bizData: { total: 1, fail_list: [], remark: '证书到期或证书未绑定域名！', fail_total: 0 }
+}
+*/

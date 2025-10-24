@@ -44,8 +44,8 @@ const formatInternalToIso = (internalDate) => {
 const api = 'Web.Domain.DashBoard.cache.clean.list'; // 接口地址
 try {
 
-    const StartTime = '2025-10-22 00:00:00';
-    const EndTime = '2025-10-22 10:00:00';
+    const StartTime = '2025-10-24 14:10:00';
+    const EndTime = '2025-10-24 14:25:00';
     const PageNumber = 1;
     const PageSize = 20;
     const commonQueryParams = {
@@ -74,3 +74,13 @@ try {
     // 网络请求或SDK内部错误
     console.error(`API '${api}' 调用失败:`, err.message);
 }
+
+/* 响应示例
+Response: {
+  httpCode: 200,
+  respBody: '{"status":{"code":1,"message":"操作成功"},"data":{"list":[{"user_id":19,"sub_user_id":0,"status":"失败","task_id":75,"sub_type":"URL","created_at":"2025-10-24 14:19:42","total":1,"succeed":0,"failed":1,"ongoing":0,"operator_user_name":"service-center@baidu.com"},{"user_id":19,"sub_user_id":0,"status":"失败","task_id":73,"sub_type":"URL","created_at":"2025-10-24 14:17:52","total":1,"succeed":0,"failed":1,"ongoing":0,"operator_user_name":"service-center@baidu.com"},{"user_id":19,"sub_user_id":0,"status":"失败","task_id":71,"sub_type":"URL","created_at":"2025-10-24 14:16:17","total":1,"succeed":0,"failed":1,"ongoing":0,"operator_user_name":"service-center@baidu.com"}],"total":3}}',
+  bizCode: 1,
+  bizMsg: '操作成功',
+  bizData: { list: [ [Object], [Object], [Object] ], total: 3 }
+}
+  */

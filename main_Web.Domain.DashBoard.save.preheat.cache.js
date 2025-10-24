@@ -48,13 +48,13 @@ try {
         data: {
             // 根据 API 文档，请求 body 需要一个 domain 数组
             "specialurl": [
-                "http://cdn.listlive.cn/path/to/file.html"
+                "http://cdn.listlive.cn/index.html"
             ]
         }
     };
 
     console.log(`\n调用 API: ${api}...`);
-    const resp = await sdkObj.post(api,reqParams);
+    const resp = await sdkObj.get(api, { query: reqParams });
 
     if (resp.bizCode === 1) {
         console.log(`${api} - 业务处理成功`);
@@ -71,3 +71,15 @@ try {
     // 网络请求或SDK内部错误
     console.error(`API '${api}' 调用失败:`, err.message);
 }
+
+/* 响应示例
+
+[DEBUG] Response: {
+  httpCode: 200,
+  respBody: '{"status":{"code":1,"message":"操作成功"},"data":{"list":[],"total":0}}',
+  bizCode: 1,
+  bizMsg: '操作成功',
+  bizData: { list: [], total: 0 }
+}
+
+*/
