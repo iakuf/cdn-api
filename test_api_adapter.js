@@ -9,7 +9,10 @@
  *    例如: node test_api_adapter.js 1  (只运行测试1)
  */
 
-const crypto = require('crypto');
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+
 
 // 配置参数
 const CONFIG = {
@@ -205,24 +208,70 @@ const tests = {
      */
     async test5_SetCertificateBind() {
         console.log('\n========== 测试 5: 证书绑定 (SetCertificate - bind) ==========');
-        console.log('注意: 此测试需要真实的证书文件，当前仅测试参数验证');
         
-        // 测试缺少参数的情况
-        const body = {
-            Domains: CONFIG.TEST_DOMAIN,
-            Action: 'bind'
-            // 故意不提供 ServerCertificate 和 PrivateKey 以测试参数验证
-        };
+        try {
+            // 从本地 Nginx_PEM 目录读取证书文件
+            const certDir = path.join(process.cwd(), 'Nginx_PEM', 'PEM');
+            const crtFile = path.join(certDir, '_.listlive.cn.pem');
+            const keyFile = path.join(certDir, '_.listlive.cn.key');
 
-        const result = await postRequest('/cert/SetCertificate', body);
-        
-        // 预期返回 400 错误（缺少必需参数）
-        if (result.statusCode === 400) {
-            console.log('✓ 测试通过 - 参数验证正常工作');
-            return { success: true };
-        } else {
-            console.log('✗ 测试失败 - 应该返回 400 错误');
-            return { success: false };
+            console.log(`证书文件路径: ${crtFile}`);
+            console.log(`私钥文件路径: ${keyFile}`);
+
+            // 检查文件是否存在
+            if (!fs.existsSync(crtFile) || !fs.existsSync(keyFile)) {
+                console.log('⚠️  证书文件不存在，跳过实际绑定测试');
+                console.log('仅测试参数验证...');
+                
+                // 测试缺少参数的情况
+                const body = {
+                    Domains: CONFIG.TEST_DOMAIN,
+                    Action: 'bind'
+                    // 故意不提供 ServerCertificate 和 PrivateKey 以测试参数验证
+                };
+
+                const result = await postRequest('/cert/SetCertificate', body);
+                
+                // 预期返回 400 错误（缺少必需参数）
+                if (result.statusCode === 400) {
+                    console.log('✓ 参数验证测试通过');
+                    return { success: true };
+                } else {
+                    console.log('✗ 参数验证测试失败');
+                    return { success: false };
+                }
+            }
+
+            // 读取证书文件
+            const serverCertificate = fs.readFileSync(crtFile, 'utf8');
+            const privateKey = fs.readFileSync(keyFile, 'utf8');
+
+            console.log('✓ 证书文件读取成功');
+            console.log(`证书长度: ${serverCertificate.length} 字节`);
+            console.log(`私钥长度: ${privateKey.length} 字节`);
+
+            const body = {
+                Domains: CONFIG.TEST_DOMAIN,
+                ServerCertificate: serverCertificate,
+                PrivateKey: privateKey,
+                Action: 'bind'
+            };
+
+            console.log('\n发送证书绑定请求...');
+            const result = await postRequest('/cert/SetCertificate', body);
+            
+            if (result.statusCode === 200 && result.data.RequestId) {
+                console.log('✓ 证书绑定成功');
+                console.log(`RequestId: ${result.data.RequestId}`);
+                return { success: true };
+            } else {
+                console.log('✗ 证书绑定失败');
+                console.log('响应:', result.data);
+                return { success: false };
+            }
+        } catch (error) {
+            console.error('✗ 测试异常:', error.message);
+            return { success: false, error: error.message };
         }
     },
 

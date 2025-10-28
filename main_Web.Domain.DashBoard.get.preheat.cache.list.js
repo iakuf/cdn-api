@@ -41,11 +41,11 @@ const formatInternalToIso = (internalDate) => {
     return date.isValid() ? date.toISOString().replace('Z', '+08:00') : null; // 假设为北京时间
 };
 // 取刷新记录
-const api = 'Web.Domain.DashBoard.cache.clean.list'; // 接口地址
+const api = 'Web.Domain.DashBoard.get.preheat.cache.list'; // 接口地址
 try {
 
-    const StartTime = '2025-10-24 14:10:00';
-    const EndTime = '2025-10-24 14:25:00';
+    const StartTime = '2025-10-29 00:00:00';
+    const EndTime = '2025-10-29 05:00:00';
     const PageNumber = 1;
     const PageSize = 20;
     const commonQueryParams = {

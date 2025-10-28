@@ -41,20 +41,20 @@ const formatInternalToIso = (internalDate) => {
     return date.isValid() ? date.toISOString().replace('Z', '+08:00') : null; // 假设为北京时间
 };
 // 取预热记录
-const api = 'Web.Domain.DashBoard.get.preheat.cache.list'; // 接口地址
+const api = 'Web.Domain.DashBoard.save.preheat.cache'; // 接口地址
 try {
 
     const reqParams = {
         data: {
             // 根据 API 文档，请求 body 需要一个 domain 数组
-            "specialurl": [
-                "http://cdn.listlive.cn/index.html"
+            "preheat_url": [
+                "https://cdn.listlive.cn/assets/img/dots-shaps.png"
             ]
         }
     };
 
     console.log(`\n调用 API: ${api}...`);
-    const resp = await sdkObj.get(api, { query: reqParams });
+    const resp = await sdkObj.post(api,  reqParams );
 
     if (resp.bizCode === 1) {
         console.log(`${api} - 业务处理成功`);
