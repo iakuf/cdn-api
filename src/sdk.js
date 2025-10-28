@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const SDK_VERSION = "1.0.0";
 
@@ -309,4 +309,4 @@ class Sdk {
     }
 }
 
-module.exports = Sdk;
+export default Sdk;

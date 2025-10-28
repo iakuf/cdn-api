@@ -1,10 +1,10 @@
 // --- 依赖导入 ---
-const Koa = require('koa');
-const Router = require('@koa/router');
-const bodyParser = require('koa-bodyparser');
-const dayjs = require('dayjs');
-const crypto = require('crypto');
-const DiansuyunSDK = require('./sdk.js');
+import Koa from 'koa';
+import Router from '@koa/router';
+import bodyParser from 'koa-bodyparser';
+import dayjs from 'dayjs';
+import crypto from 'crypto';
+import DiansuyunSDK from './sdk.js';
 
 // --- 应用配置与初始化 ---
 const app = new Koa();
@@ -161,7 +161,9 @@ router.post('/content/RefreshCaches', authMiddleware, async (ctx) => {
         const beforeSubmitTime = dayjs().subtract(5, 'second').format('YYYY-MM-DD HH:mm:ss');
 
         // 1. 提交缓存清理任务
-        const submitResult = await sdk.put('/V4/Web.Domain.DashBoard.saveCache', internalReqParams);
+        console.log('internalReqParams', internalReqParams);
+        const submitResult = await sdk.put('Web.Domain.DashBoard.saveCache', internalReqParams);
+        console.log('submitResult', submitResult);
 
         if (submitResult.bizCode !== 1) {
             throw new Error(`提交缓存清理任务失败: ${submitResult.bizMsg}`);
@@ -176,7 +178,7 @@ router.post('/content/RefreshCaches', authMiddleware, async (ctx) => {
                 per_page: 1, // 只取最新的一条
             }
         };
-        const taskListResult = await sdk.get('/V4/Web.Domain.DashBoard.cache.clean.list', findTaskParams);
+        const taskListResult = await sdk.get('Web.Domain.DashBoard.cache.clean.list', findTaskParams);
 
         if (taskListResult.bizCode !== 1 || !taskListResult.bizData.list || taskListResult.bizData.list.length === 0) {
             console.error('警告: 成功提交缓存清理任务，但无法立即查询到任务ID。可能存在延迟。');
@@ -225,7 +227,7 @@ router.post('/content/PreloadCaches', authMiddleware, async (ctx) => {
         const beforeSubmitTime = dayjs().subtract(5, 'second').format('YYYY-MM-DD HH:mm:ss');
         
         // 1. 提交预热任务
-        const submitResult = await sdk.post('/V4/Web.Domain.DashBoard.save.preheat.cache', internalReqParams);
+        const submitResult = await sdk.post('Web.Domain.DashBoard.save.preheat.cache', internalReqParams);
 
         if (submitResult.bizCode !== 1) {
             throw new Error(`提交预热任务失败: ${submitResult.bizMsg}`);
@@ -239,7 +241,7 @@ router.post('/content/PreloadCaches', authMiddleware, async (ctx) => {
                 per_page: 1,
             }
         };
-        const taskListResult = await sdk.get('/V4/Web.Domain.DashBoard.get.preheat.cache.list', findTaskParams);
+        const taskListResult = await sdk.get('Web.Domain.DashBoard.get.preheat.cache.list', findTaskParams);
 
         if (taskListResult.bizCode !== 1 || !taskListResult.bizData.list || taskListResult.bizData.list.length === 0) {
             console.error('警告: 成功提交预热任务，但无法立即查询到任务ID。可能存在延迟。');
@@ -291,7 +293,7 @@ router.post('/content/GetRefreshOrPreloadTask', authMiddleware, async (ctx) => {
         }
 
         // 1. 查询刷新任务列表
-        const refreshResp = await sdk.get('/V4/Web.Domain.DashBoard.cache.clean.list', { query: commonQueryParams });
+        const refreshResp = await sdk.get('Web.Domain.DashBoard.cache.clean.list', { query: commonQueryParams });
         if (refreshResp.bizCode === 1 && refreshResp.bizData.list) {
             totalCount += refreshResp.bizData.total;
             const refreshTasks = refreshResp.bizData.list.map(task => ({
@@ -307,7 +309,7 @@ router.post('/content/GetRefreshOrPreloadTask', authMiddleware, async (ctx) => {
         }
 
         // 2. 查询预热任务列表
-        const preloadResp = await sdk.get('/V4/Web.Domain.DashBoard.get.preheat.cache.list', { query: commonQueryParams });
+        const preloadResp = await sdk.get('Web.Domain.DashBoard.get.preheat.cache.list', { query: commonQueryParams });
         if (preloadResp.bizCode === 1 && preloadResp.bizData.list) {
             totalCount += preloadResp.bizData.total;
             const preloadTasks = preloadResp.bizData.list.map(task => ({
@@ -457,7 +459,7 @@ router.post('/cert/SetCertificate', authMiddleware, async (ctx) => {
                 }
             };
 
-            const uploadResult = await sdk.post('/V4/Web.ca.text.save', uploadCertParams);
+            const uploadResult = await sdk.post('Web.ca.text.save', uploadCertParams);
 
             if (uploadResult.bizCode !== 1) {
                 throw new Error(`上传证书失败: ${uploadResult.bizMsg}`);
@@ -474,7 +476,7 @@ router.post('/cert/SetCertificate', authMiddleware, async (ctx) => {
                 }
             };
 
-            const bindResult = await sdk.post('/V4/Web.ca.batch.operat', bindParams);
+            const bindResult = await sdk.post('Web.ca.batch.operat', bindParams);
 
             if (bindResult.bizCode !== 1) {
                 throw new Error(`绑定证书到域名失败: ${bindResult.bizMsg}`);
@@ -492,7 +494,7 @@ router.post('/cert/SetCertificate', authMiddleware, async (ctx) => {
                 domain: domainList[0] // 假设一次只处理一个域名
             };
 
-            const domainInfo = await sdk.get('/V4/Web.Domain.Info', { query: domainInfoParams });
+            const domainInfo = await sdk.get('Web.Domain.Info', { query: domainInfoParams });
 
             if (domainInfo.bizCode !== 1 || !domainInfo.bizData.ca_id) {
                 throw new Error(`查询域名证书信息失败或域名未绑定证书`);
@@ -508,7 +510,7 @@ router.post('/cert/SetCertificate', authMiddleware, async (ctx) => {
                 }
             };
 
-            const unbindResult = await sdk.post('/V4/Web.ca.batch.operat', unbindParams);
+            const unbindResult = await sdk.post('Web.ca.batch.operat', unbindParams);
 
             if (unbindResult.bizCode !== 1) {
                 throw new Error(`解绑证书失败: ${unbindResult.bizMsg}`);
@@ -549,7 +551,7 @@ router.post('/cert/GetCertificates', authMiddleware, async (ctx) => {
             domain: Domain
         };
 
-        const domainInfo = await sdk.get('/V4/Web.Domain.Info', { query: domainInfoParams });
+        const domainInfo = await sdk.get('Web.Domain.Info', { query: domainInfoParams });
 
         if (domainInfo.bizCode !== 1) {
             throw new Error(`查询域名信息失败: ${domainInfo.bizMsg}`);
@@ -570,7 +572,7 @@ router.post('/cert/GetCertificates', authMiddleware, async (ctx) => {
             per_page: 100
         };
 
-        const certList = await sdk.get('/V4/Web.ca.self.list', { query: certListParams });
+        const certList = await sdk.get('Web.ca.self.list', { query: certListParams });
 
         if (certList.bizCode !== 1 || !certList.bizData.list) {
             throw new Error(`查询证书列表失败: ${certList.bizMsg}`);

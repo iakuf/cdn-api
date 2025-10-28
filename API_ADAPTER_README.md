@@ -135,7 +135,7 @@ T=$(date +%s)
 TOKEN=$(echo -n "${AK}${SK}${T}" | sha1sum | awk '{print $1}')
 
 # 发送请求
-curl -X POST "http://localhost:3000/content/RefreshCaches?ak=${AK}&t=${T}&token=${TOKEN}" \
+curl -X POST "http://localhost:3000/content/RefreshCaches" \
   -H "Content-Type: application/json" \
   -d '{
     "Files": [

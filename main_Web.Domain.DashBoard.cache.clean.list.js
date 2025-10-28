@@ -44,8 +44,8 @@ const formatInternalToIso = (internalDate) => {
 const api = 'Web.Domain.DashBoard.cache.clean.list'; // 接口地址
 try {
 
-    const StartTime = '2025-10-24 14:10:00';
-    const EndTime = '2025-10-24 14:20:00';
+    const StartTime = '2025-10-28 11:30:00';
+    const EndTime = '2025-10-28 23:20:00';
     const PageNumber = 1;
     const PageSize = 20;
     const commonQueryParams = {

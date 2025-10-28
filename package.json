@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "API adapter for diansuyun CDN service - 将第三方标准API转换为Diansuyun内部API",
   "main": "src/server.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "start": "node src/server.js",
     "test": "node test_api_adapter.js",
